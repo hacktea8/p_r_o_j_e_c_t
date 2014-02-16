@@ -69,6 +69,9 @@ if ( ! function_exists('getSynuserUid'))
 if ( ! function_exists('getSynuserInfo'))
 {
   function getSynuserInfo($uid){
+    if( !$uid){
+       return false;
+    }
     global $uc_api,$master_uckey;
     $request = array(
     'params'=>"$uid",
@@ -79,11 +82,11 @@ if ( ! function_exists('getSynuserInfo'))
     $url = $uc_api.strtrip($request,$master_uckey);
     $ctx = stream_context_create(array(
     'http' => array(
-        'timeout' => 15
+        'timeout' => 35
         )
     )
     );
-    $uinfo = file_get_contents($url, null, $ctx);
+    $uinfo = @file_get_contents($url, null, $ctx);
     $uinfo = unserialize($uinfo);
     $uinfo = $uinfo['result'][$uid];
     $groups = explode(',', $uinfo['groups']);
